@@ -1,3 +1,9 @@
+# BJORN
+# A VGDC@UCI BOT
+
+# Written by Diane Sparks
+# Bjorn (the character) by Franny (fruttipie)
+
 import discord
 from discord import app_commands
 from discord.ext import tasks
