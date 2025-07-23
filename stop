@@ -1,0 +1,5 @@
+#!/bin/bash
+
+screen -x bjorn -X stuff $'\003'
+screen -x bjorn -X quit
+
