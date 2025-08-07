@@ -21,7 +21,7 @@ ChannelTableLackers = 361379365134663691
 TokenFile = "token.txt"
 
 scam_keywords_start = ["give", "giving", "offering", "selling", "join our"]
-scam_keywords = ["tutors", "macbook", "mac book", "charger", "tickets", "iphone", "apple"]
+scam_keywords = ["tutors", "macbook", "mac book", "charger", "tickets", "iphone", "apple", "camera"]
 
 secret_lab_regex = re.compile(r"(?:[s$]\s*(?:[e3 ]\s*)+[ck]\s*[r4]\s*(?:[e3 i1]\s*)+[t7]\s*([e3 ]\s*)*\s*[l1]\s*[a@8 ]\s*[b8])", re.IGNORECASE)
 
@@ -57,7 +57,7 @@ async def on_message(message: discord.Message):
 			await message.delete()
 			#await message.author.timeout(datetime.timedelta(seconds=15), reason="Suspected spam")
 			table_channel = client.get_channel(ChannelTableLackers)
-			await table_channel.send(f"I just automatically removed a suspected spam message from <@{message.author.id}> in <#{message.channel.id}>\nMessage: {message.content}")
+			await table_channel.send(f"I just automatically removed a suspected spam message from <@{message.author.id}> in <#{message.channel.id}>\nMessage: {message.content.replace('everyone', '/everyone')}")
 			return
 
 	if secret_lab_regex.search(message.content) != None:
