@@ -16,12 +16,12 @@ import datetime
 VgdcServerId = 228326116270538753
 TestServerId = 1393079029589999739
 ChannelLabStatus = 629369478462963722
-ChannelTableLackers = 361379365134663691
+ChannelBjornHammer = 1420871723363991673
 
 TokenFile = "token.txt"
 
-scam_keywords_start = ["give", "giving", "offering", "selling", "join our"]
-scam_keywords = ["tutors", "macbook", "mac book", "charger", "tickets", "iphone", "apple", "camera"]
+scam_keywords_start = ["give", "giving", "offering", "sell", "selling", "join our", "handing", "handling", "gifting", "for sale"]
+scam_keywords = ["tutors", "macbook", "apple watch", "iphone", "i phone", "mac book", "charger", "tickets", "iphone", "apple", "camera", "for sale", "honda", "car", "ps4", "ps5", "xbox", "nintendo", "dm", "interested"]
 
 secret_lab_regex = re.compile(r"(?:[s$]\s*(?:[e3 ]\s*)+[ck]\s*[r4]\s*(?:[e3 i1]\s*)+[t7]\s*([e3 ]\s*)*\s*[l1]\s*[a@8 ]\s*[b8])", re.IGNORECASE)
 
@@ -52,12 +52,12 @@ async def on_message(message: discord.Message):
 
 	if True:
 		msg_lower = message.content.lower()
-		if any(word in msg_lower for word in scam_keywords_start) and any(word in msg_lower for word in scam_keywords):
+		if ("everyone" in msg_lower or "here" in msg_lower) and any(word in msg_lower for word in scam_keywords_start) and any(word in msg_lower for word in scam_keywords):
 			#await message.reply(f"I just automatically removed a message that contained phrases we've recently seen in malicious messages. If this is a mistake, please DM one of the programming officers.\nMessage sent by: <@{message.author.id}>", mention_author=True)
 			await message.delete()
 			#await message.author.timeout(datetime.timedelta(seconds=15), reason="Suspected spam")
-			table_channel = client.get_channel(ChannelTableLackers)
-			await table_channel.send(f"I just automatically removed a suspected spam message from <@{message.author.id}> in <#{message.channel.id}>\nMessage: {message.content.replace('everyone', '/everyone')}")
+			table_channel = client.get_channel(ChannelBjornHammer)
+			await table_channel.send(f"I just automatically removed a suspected spam message from <@{message.author.id}> in <#{message.channel.id}>\nMessage: {message.content.replace('everyone', '/everyone').replace('here', '/here')}")
 			return
 
 	if secret_lab_regex.search(message.content) != None:
