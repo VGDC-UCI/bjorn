@@ -4,12 +4,16 @@
 # Written by Diane Sparks
 # Bjorn (the character) by Franny (fruttipie)
 
+import os
 import discord
 from discord import app_commands
 from discord.ext import tasks
 
 import re
 import datetime
+import zoneinfo
+
+pst = zoneinfo.ZoneInfo("America/Los_Angeles")
 
 # //////////////////////////////////////////////////////////////////////////////
 
@@ -21,7 +25,7 @@ ChannelBjornHammer = 1420871723363991673
 TokenFile = "token.txt"
 
 scam_keywords_start = ["give", "giving", "offering", "sell", "selling", "join our", "handing", "handling", "gifting", "for sale"]
-scam_keywords = ["tutors", "macbook", "apple watch", "iphone", "i phone", "mac book", "charger", "tickets", "iphone", "apple", "camera", "for sale", "honda", "car", "ps4", "ps5", "xbox", "nintendo", "dm", "interested"]
+scam_keywords = ["tutors", "macbook", "apple watch", "iphone", "i phone", "mac book", "charger", "tickets", "apple", "camera", "for sale", "honda", "car", "ps4", "ps5", "xbox", "nintendo", "dm", "interested"]
 
 secret_lab_regex = re.compile(r"(?:[s$]\s*(?:[e3 ]\s*)+[ck]\s*[r4]\s*(?:[e3 i1]\s*)+[t7]\s*([e3 ]\s*)*\s*[l1]\s*[a@8 ]\s*[b8])", re.IGNORECASE)
 
@@ -50,17 +54,17 @@ async def on_message(message: discord.Message):
 	if message.author.id == client.user.id:
 		return
 
-	if True:
-		msg_lower = message.content.lower()
-		if ("everyone" in msg_lower or "here" in msg_lower) and any(word in msg_lower for word in scam_keywords_start) and any(word in msg_lower for word in scam_keywords):
-			#await message.reply(f"I just automatically removed a message that contained phrases we've recently seen in malicious messages. If this is a mistake, please DM one of the programming officers.\nMessage sent by: <@{message.author.id}>", mention_author=True)
-			await message.delete()
-			#await message.author.timeout(datetime.timedelta(seconds=15), reason="Suspected spam")
-			table_channel = client.get_channel(ChannelBjornHammer)
+	msg_lower = message.content.lower()
+	if ("everyone" in msg_lower or "here" in msg_lower) and any(word in msg_lower for word in scam_keywords_start) and any(word in msg_lower for word in scam_keywords):
+		#await message.reply(f"I just automatically removed a message that contained phrases we've recently seen in malicious messages. If this is a mistake, please DM one of the programming officers.\nMessage sent by: <@{message.author.id}>", mention_author=True)
+		await message.delete()
+		#await message.author.timeout(datetime.timedelta(seconds=15), reason="Suspected spam")
+		table_channel = client.get_channel(ChannelBjornHammer)
+		if table_channel:
 			await table_channel.send(f"I just automatically removed a suspected spam message from <@{message.author.id}> in <#{message.channel.id}>\nMessage: {message.content.replace('everyone', '/everyone').replace('here', '/here')}")
-			return
+		return
 
-	if secret_lab_regex.search(message.content) != None:
+	if secret_lab_regex.search(message.content) is not None:
 		await message.reply("I think you mean \"Quiet Lab.\"")
 		return
 
@@ -82,13 +86,13 @@ async def labclose(interaction: discord.Interaction):
 	await set_lab_open(False)
 	await interaction.response.send_message("Game Lab is now closed! ⛔")
 
-@tasks.loop(time=datetime.time(hour=5))
+@tasks.loop(time=datetime.time(hour=5, tzinfo=pst))
 async def auto_close_lab():
 	await set_lab_open(False)
 
 if __name__ == "__main__":
-	token_file = open(TokenFile, "r")
-	token = token_file.readline()
-	token_file.close()
+	token = os.getenv('DISCORD_TOKEN')
+	if token is None:
+		raise ValueError("DISCORD_TOKEN environment variable not set")
 
 	client.run(token)

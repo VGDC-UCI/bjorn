@@ -1,3 +1,32 @@
-bjorn-env/
-token.txt
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
+# Virtual environment
+venv/
+.env
+.envrc
+
+# Sensitive info
+.env
+secrets.json
+config.py
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Deployment / build files
+dist/
+build/
