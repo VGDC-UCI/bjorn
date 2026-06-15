@@ -86,7 +86,8 @@ async def labclose(interaction: discord.Interaction):
 	await set_lab_open(False)
 	await interaction.response.send_message("Game Lab is now closed! ⛔")
 
-@tasks.loop(time=datetime.time(hour=5, tzinfo=pst))
+# Automatically close at 21:00 (9 PM)
+@tasks.loop(time=datetime.time(hour=21, tzinfo=pst))
 async def auto_close_lab():
 	await set_lab_open(False)
 
