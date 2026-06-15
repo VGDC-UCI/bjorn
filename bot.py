@@ -13,16 +13,15 @@ import re
 import datetime
 import zoneinfo
 
-pst = zoneinfo.ZoneInfo("America/Los_Angeles")
 
 # //////////////////////////////////////////////////////////////////////////////
+
+pst = zoneinfo.ZoneInfo("America/Los_Angeles")
 
 VGDCServerId = 228326116270538753
 TestServerId = 1393079029589999739
 ChannelLabStatus = 629369478462963722
 ChannelBjornHammer = 1420871723363991673
-
-TokenFile = "token.txt"
 
 scam_keywords_start = ["give", "giving", "offering", "sell", "selling", "join our", "handing", "handling", "gifting",
                        "for sale"]
@@ -45,7 +44,7 @@ command_tree = app_commands.CommandTree(client)
 
 async def set_lab_open(is_open: bool):
 	await client.change_presence(activity=discord.CustomActivity(
-		name=f"{'✅' if is_open else '⛔'} Game Lab is {'OPEN' if is_open else 'CLOSED'}"))
+		name="✅ Game Lab is OPEN" if is_open else "⛔ Game Lab is CLOSED"))
 
 
 @client.event
@@ -108,6 +107,8 @@ async def labclose(interaction: discord.Interaction):
 @tasks.loop(time=datetime.time(hour=21, tzinfo=pst))
 async def auto_close_lab():
 	await set_lab_open(False)
+	channel = client.get_channel(ChannelLabStatus)
+	await channel.send("9PM: Game Lab automatically closed.")
 
 
 if __name__ == "__main__":
