@@ -36,8 +36,8 @@ async def workshops(
 		guild = client.get_guild(VGDCServerId)
 		embed = build_workshop_embed(year, quarter.value, week, guild=guild)
 	except Exception as e:
-		print(f"[workshops] sheet error: {e}")  # full detail in your logs
-		# await interaction.followup.send("⚠️ Something went wrong reading the workshop data. Please try again later.")
+		print(f"[workshops] sheet error: {e}")
+		await interaction.followup.send("⚠️ Something went wrong reading the workshop data. Please try again later.")
 		return
 
 	await interaction.followup.send(embed=embed)
