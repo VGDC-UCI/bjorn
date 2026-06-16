@@ -1,2 +1,4 @@
 discord.py
-tzdata
+python-dotenv
+gspread
+google-auth
