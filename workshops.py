@@ -126,14 +126,14 @@ def get_dept_emoji(guild: discord.Guild, dept: str) -> str:
 def build_workshop_embed(year, quarter, week, guild=None):
 	matches = sort_workshops(get_workshops_for(year, quarter, week))
 	embed = discord.Embed(
-		title=f"📅 Workshops — {quarter} {year}, Week {week}",
+		title=f"📅 Workshops for {quarter} {year}, Week {week}",
 		color=0x2E5E8C,
 	)
 	if not matches:
 		embed.description = f"No workshops found for {quarter} {year}, Week {week}."
 		return embed
 
-	embed.description = f"There are {len(matches)} workshops found for {quarter} {year}, Week {week}:"
+	embed.description = f"Bjorn found {len(matches)} workshops for {quarter} {year}, Week {week}:"
 	for w in matches:
 		dept = str(w.get("Dept", "")).strip()
 		emoji = get_dept_emoji(guild, dept)
