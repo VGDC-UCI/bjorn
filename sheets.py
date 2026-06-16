@@ -9,7 +9,10 @@ from google.oauth2.service_account import Credentials
 
 
 def get_workshops():
-	creds_json = json.loads(os.getenv('GOOGLE_CREDENTIALS'))
+	raw = os.getenv('GOOGLE_CREDENTIALS')
+	if not raw:
+		raise RuntimeError("GOOGLE_CREDENTIALS environment variable is not set")
+	creds_json = json.loads(raw)
 	creds = Credentials.from_service_account_info(creds_json, scopes=[
 		"https://www.googleapis.com/auth/spreadsheets.readonly",
 		"https://www.googleapis.com/auth/drive.readonly"
