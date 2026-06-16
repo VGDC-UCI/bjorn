@@ -12,7 +12,6 @@ env/
 # Sensitive info
 .env
 secrets.json
-config.py
 
 # IDE files
 .vscode/
