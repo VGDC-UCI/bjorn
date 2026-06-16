@@ -2,7 +2,8 @@
 # BJORN
 # A VGDC@UCI BOT
 #
-# Written by Diane Sparks and Justin Li
+# Created by Diane Sparks (fractaldiane)
+# Maintained by Justin Li (birbwatch)
 # Bjorn (the character) by Franny (fruttipie)
 #
 # Entry point: wires everything together and runs the bot.
