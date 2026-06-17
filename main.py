@@ -12,6 +12,8 @@ import os
 
 from dotenv import load_dotenv
 
+from config import VGDCServerId, ModerationChannelWhitelist
+
 load_dotenv()
 
 from bot import client, command_tree
@@ -36,8 +38,18 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+	# Skip Bjorn messages
 	if message.author.id == client.user.id:
 		return
+
+	# Skip messages not in VGDC server
+	if not message.guild or message.guild.id != VGDCServerId:
+		return
+
+	# Skip announcement channels
+	if message.channel.id in ModerationChannelWhitelist:
+		return
+
 	await moderation.handle_message(message)
 
 

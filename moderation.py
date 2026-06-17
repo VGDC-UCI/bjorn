@@ -4,7 +4,7 @@
 import discord
 
 from bot import client
-from config import scam_keywords_start, scam_keywords, ChannelBjornHammer
+from config import scam_keywords_start, scam_keywords, ChannelBjornHammer, secret_lab_regex
 
 
 async def handle_message(message):
@@ -58,6 +58,6 @@ async def handle_message(message):
 			)
 		return
 
-# if secret_lab_regex.search(message.content) is not None:
-# 	await message.reply("I think you mean \"Quiet Lab.\"")
-# 	return
+	if secret_lab_regex.search(message.content) is not None:
+		await message.reply("I think you mean \"Quiet Lab.\"")
+		return

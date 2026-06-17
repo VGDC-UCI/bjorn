@@ -2,6 +2,7 @@
 # Constants, IDs, timezone, and regex patterns for Bjorn
 
 import datetime
+import re
 import zoneinfo
 
 # Timezone
@@ -12,14 +13,20 @@ VGDCServerId = 228326116270538753
 ChannelLabStatus = 629369478462963722
 ChannelBjornHammer = 1420871723363991673
 ChannelWorkshops = 363457813608923137
+ModerationChannelWhitelist = [
+	639931618051489792,     # announcements
+	363457813608923137,     # workshops
+	657357663574818836,     # promotions
+	583438712445206555,     # meeting-slides
+]
 
 # Scam detection keywords
-scam_keywords_start = ["give", "giving", "offering", "sell", "selling", "join our", "handing", "handling", "gifting",
-                       "for sale"]
+scam_keywords_start = ["give", "giving", "offering", "sell", "join our", "handing", "handling", "gift",
+                       "for sale", "dm", "interested"]
 scam_keywords = ["tutors", "macbook", "apple watch", "iphone", "i phone", "mac book", "charger", "tickets", "apple",
-                 "camera", "for sale", "honda", "car", "ps4", "ps5", "xbox", "nintendo", "dm", "interested"]
-# secret_lab_regex = re.compile(
-# 	r"(?:[s$]\s*(?:[e3 ]\s*)+[ck]\s*[r4]\s*(?:[e3 i1]\s*)+[t7]\s*([e3 ]\s*)*\s*[l1]\s*[a@8 ]\s*[b8])", re.IGNORECASE)
+                 "camera", "honda", "car", "ps4", "ps5", "xbox", "nintendo"]
+secret_lab_regex = re.compile(
+	r"(?:[s$]\s*(?:[e3 ]\s*)+[ck]\s*[r4]\s*(?:[e3 i1]\s*)+[t7]\s*([e3 ]\s*)*\s*[l1]\s*[a@8 ]\s*[b8])", re.IGNORECASE)
 
 # Day ordering for sorting workshops
 DAY_ORDER = {
