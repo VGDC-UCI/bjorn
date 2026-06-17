@@ -29,19 +29,20 @@ async def workshops(
 		quarter: app_commands.Choice[str],
 		week: app_commands.Range[int, 1, 10]
 ):
-	# Defer in case the Google Sheets call takes a moment
-	await interaction.response.defer()
 
 	# Block weeks that haven't started yet (before that week's Monday in PST).
 	if not week_has_started(year, quarter.value, week):
 		monday = get_week_start_date(year, quarter.value, week)
 		when = monday.strftime("%b %d, %Y") if monday else "its scheduled start date"
-		await interaction.followup.send(
+		await interaction.response.send_message(
 			f"⏳ The workshop schedule for **{quarter.value} {year}, Week {week}** isn't "
 			f"available yet. It will be available by **Monday, {when}**.",
 			ephemeral=True,
 		)
 		return
+
+	# Defer in case the Google Sheets call takes a moment
+	await interaction.response.defer()
 
 	try:
 		guild = client.get_guild(VGDCServerId)
