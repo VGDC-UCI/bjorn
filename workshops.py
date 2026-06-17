@@ -219,7 +219,7 @@ def build_workshop_embed(year, quarter, week, guild=None):
 		embed.set_footer(text=footer_text)
 		return embed
 
-	embed.description = f"Bjorn found {len(matches)} workshops for {quarter} {year}, Week {week}:"
+	embed.description = f"Bjorn found {len(matches)} workshops:"
 	for w in matches:
 		dept = str(w.get("Dept", "")).strip()
 		emoji = get_dept_emoji(guild, dept)
