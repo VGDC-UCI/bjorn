@@ -1,6 +1,7 @@
 # config.py
 # Constants, IDs, timezone, and regex patterns for Bjorn
 
+import datetime
 import zoneinfo
 
 # Timezone
@@ -24,4 +25,34 @@ scam_keywords = ["tutors", "macbook", "apple watch", "iphone", "i phone", "mac b
 DAY_ORDER = {
 	"monday": 1, "tuesday": 2, "wednesday": 3, "thursday": 4,
 	"friday": 5, "saturday": 6, "sunday": 7
+}
+
+# UCI quarter start dates (the Monday that begins Week 1).
+# Add a new entry each academic year as the dates are published.
+QUARTER_STARTS = {
+	2023: {
+		"Winter": datetime.date(2023, 1, 9),
+		"Spring": datetime.date(2023, 4, 3),
+		"Fall": datetime.date(2023, 10, 2),
+	},
+	2024: {
+		"Winter": datetime.date(2024, 1, 8),
+		"Spring": datetime.date(2024, 4, 1),
+		"Fall": datetime.date(2024, 9, 30),
+	},
+	2025: {
+		"Winter": datetime.date(2025, 1, 6),
+		"Spring": datetime.date(2025, 3, 31),
+		"Fall": datetime.date(2025, 9, 29),
+	},
+	2026: {
+		"Winter": datetime.date(2026, 1, 5),
+		"Spring": datetime.date(2026, 3, 25),
+		"Fall": datetime.date(2026, 9, 28),
+	},
+	2027: {
+		"Winter": datetime.date(2026, 1, 4),
+		"Spring": datetime.date(2026, 3, 29),
+		"Fall": datetime.date(2026, 9, 27),  # edit when this comes out
+	},
 }
