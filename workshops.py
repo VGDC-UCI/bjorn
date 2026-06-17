@@ -210,7 +210,7 @@ def build_workshop_embed(year, quarter, week, guild=None):
 	now = datetime.datetime.now(pst)
 	updated = now.strftime("%b %d, %Y at ") + now.strftime("%I:%M %p").lstrip("0")
 	footer_text = (
-		f"VGDC at UCI 🎮 •\u00A0 Last updated {updated}"
+		f"VGDC at UCI \u00A0•\u00A0 Last updated {updated}"
 		f"{_encode_refresh_tag(year, quarter, week)}"
 	)
 
