@@ -47,7 +47,7 @@ QUARTER_STARTS = {
 	},
 	2026: {
 		"Winter": datetime.date(2026, 1, 5),
-		"Spring": datetime.date(2026, 3, 25),
+		"Spring": datetime.date(2026, 3, 30),
 		"Fall": datetime.date(2026, 9, 28),
 	},
 	2027: {
