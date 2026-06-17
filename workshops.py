@@ -202,7 +202,7 @@ def build_workshop_embed(year, quarter, week, guild=None):
 	matches = sort_workshops(get_workshops_for(year, quarter, week))
 	embed = discord.Embed(
 		title=f"📅 Workshops for {quarter} {year}, Week {week}",
-		color=0x8BB0F9,
+		color=0xD2FF5E,
 	)
 
 	# User-friendly, readable footer. The refresh data is appended as an
