@@ -29,7 +29,6 @@ async def workshops(
 		quarter: app_commands.Choice[str],
 		week: app_commands.Range[int, 1, 10]
 ):
-
 	# Block weeks that haven't started yet (before that week's Monday in PST).
 	if not week_has_started(year, quarter.value, week):
 		monday = get_week_start_date(year, quarter.value, week)

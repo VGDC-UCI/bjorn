@@ -14,9 +14,33 @@ async def handle_message(message):
 		await message.delete()
 		table_channel = client.get_channel(ChannelBjornHammer)
 		if table_channel:
+			embed = discord.Embed(
+				title="🛡️ Spam Message Removed",
+				description="A suspected spam message was automatically detected and deleted.",
+				color=0xE74C3C,
+				timestamp=message.created_at
+			)
+			embed.add_field(
+				name="Author",
+				value=f"<@{message.author.id}>",
+				inline=True
+			)
+			embed.add_field(
+				name="Channel",
+				value=f"<#{message.channel.id}>",
+				inline=True
+			)
+			embed.add_field(
+				name="Message Content",
+				value=message.content[:1024] if message.content else "*(no text content)*",
+				inline=False
+			)
+			embed.set_footer(text="Automated Moderation")
+
 			await table_channel.send(
-				f"I just automatically removed a suspected spam message from <@{message.author.id}> in <#{message.channel.id}>\nMessage: {message.content}",
-				allowed_mentions=discord.AllowedMentions.none())
+				embed=embed,
+				allowed_mentions=discord.AllowedMentions.none()
+			)
 		return
 
 # if secret_lab_regex.search(message.content) is not None:
