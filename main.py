@@ -42,8 +42,9 @@ async def on_message(message):
 	if message.author.id == client.user.id:
 		return
 
-	# Skip messages not in VGDC server
-	if not message.guild or message.guild.id != VGDCServerId:
+	# Skip messages not in VGDC server (removing so it can be used it UniJam?)
+	# if not message.guild or message.guild.id != VGDCServerId:
+	if not message.guild:
 		return
 
 	# Skip announcement channels

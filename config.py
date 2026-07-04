@@ -18,6 +18,7 @@ ModerationChannelWhitelist = [
 	363457813608923137,     # workshops
 	657357663574818836,     # promotions
 	583438712445206555,     # meeting-slides
+	1366569452933742673,    # UniJam announcements
 ]
 
 # Scam detection keywords
