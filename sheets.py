@@ -18,5 +18,5 @@ def get_workshops():
 		"https://www.googleapis.com/auth/drive.readonly"
 	])
 	gc = gspread.authorize(creds)
-	sheet = gc.open("[VGDC Workshop Database (Officers)]").get_worksheet(1)
+	sheet = gc.open("[VGDC Workshop Database (Officers)]").get_worksheet(2)
 	return sheet.get_all_records(head=2)
