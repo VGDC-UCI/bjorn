@@ -21,10 +21,9 @@ ModerationChannelWhitelist = [
 ]
 
 # Scam detection keywords
-scam_keywords_start = ["give", "giving", "offering", "sell", "join our", "handing", "handling", "gift",
-                       "for sale", "dm", "interested"]
-scam_keywords = ["tutors", "macbook", "apple watch", "iphone", "i phone", "mac book", "charger", "tickets", "apple",
-                 "camera", "honda", "car", "ps4", "ps5", "xbox", "x-box", "nintendo", "sony"]
+scam_keywords_start = ["give out", "just upgraded", "giving out", "give away", "giving away", "is free", "for free",
+                       "join our", "for sale", "dm me", "you are interested", "you're interested"]
+scam_keywords = ["tutors", "macbook", "iphone", "tickets", "camera", "car", "ps5"]
 secret_lab_regex = re.compile(
 	r"(?:[s$]\s*(?:[e3 ]\s*)+[ck]\s*[r4]\s*(?:[e3 i1]\s*)+[t7]\s*([e3 ]\s*)*\s*[l1]\s*[a@8 ]\s*[b8])", re.IGNORECASE)
 
