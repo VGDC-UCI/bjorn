@@ -19,6 +19,7 @@ ModerationChannelWhitelist = [
 	657357663574818836,     # promotions
 	583438712445206555,     # meeting-slides
 ]
+ChannelLabOpenVC = 1553868534663086240
 
 # Scam detection keywords
 scam_keywords_start = ["give out", "just upgraded", "giving out", "give away", "giving away", "is free", "for free",
