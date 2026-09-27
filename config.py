@@ -33,6 +33,8 @@ DAY_ORDER = {
 	"friday": 5, "saturday": 6, "sunday": 7
 }
 
+WORKSHOP_SHEET = "https://docs.google.com/spreadsheets/d/1-5-OH3o_zeh8TT9WV7zcA7T-wWZhGs8xIaLYsL0HpZQ/edit"
+
 # UCI quarter start dates (the Monday that begins Week 1).
 # Add a new entry each academic year as the dates are published.
 QUARTER_STARTS = {
