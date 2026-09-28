@@ -21,7 +21,7 @@ async def auto_close_lab():
 	await channel.send("9PM: Game Lab automatically closed.")
 
 
-@tasks.loop(time=datetime.time(hour=9, tzinfo=pst))
+@tasks.loop(time=datetime.time(hour=7, tzinfo=pst))
 async def weekly_workshop_reminder():
 	# Only run on Mondays
 	if datetime.datetime.now(pst).weekday() != 0:
@@ -51,4 +51,9 @@ async def weekly_workshop_reminder():
 	# Pass the VGDC guild so department custom emojis resolve correctly
 	guild = client.get_guild(VGDCServerId)
 	embed = build_workshop_embed(year, quarter, week, guild=guild)
+
+	# Don't send a reminder if no workshops exist (eg: during summer)
+	if len(embed.fields) <= 1:
+		return
+
 	await channel.send(embed=embed)
