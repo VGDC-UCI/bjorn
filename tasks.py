@@ -5,16 +5,17 @@ import datetime
 
 from discord.ext import tasks
 
+import lab_state
 from bot import client
 from config import pst, ChannelLabStatus, ChannelWorkshops, VGDCServerId
-from lab_state import set_lab_open, is_lab_open
+from lab_state import set_lab_open
 from workshops import get_current_quarter_and_week, get_workshops_for, build_workshop_embed
 
 
 # Automatically close at 21:00 (9 PM)
 @tasks.loop(time=datetime.time(hour=21, tzinfo=pst))
 async def auto_close_lab():
-	if not is_lab_open:
+	if not lab_state.is_lab_open:
 		return
 	await set_lab_open(False)
 	channel = client.get_channel(ChannelLabStatus)
