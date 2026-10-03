@@ -225,7 +225,7 @@ def build_workshop_embed(year, quarter, week, guild=None):
 		emoji = get_dept_emoji(guild, dept)
 		title = w.get("Workshop", "Untitled")
 		value = f"🗓️ **{w.get('Day', '')}** at **{w.get('Time', '')}** \u00A0•📍 {w.get('Location', '')}\n{emoji} {dept}"
-		link = str(w.get("Public Link", "")).strip()
+		link = str(w.get("Slides", "")).strip()
 		if link and link.lower() not in ("", "n/a", "tbd", "no slides provided"):
 			value += f"\n🔗 [Slides / Link]({link})"
 		embed.add_field(name=f"{title}", value=value, inline=False)
