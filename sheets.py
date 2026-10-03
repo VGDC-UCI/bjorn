@@ -6,7 +6,6 @@ import os
 
 import gspread
 from google.oauth2.service_account import Credentials
-from gspread.utils import ValueRenderOption
 
 
 def get_workshops():
@@ -20,5 +19,4 @@ def get_workshops():
 	])
 	gc = gspread.authorize(creds)
 	sheet = gc.open("[VGDC Workshop Database (Officers)]").get_worksheet(2)
-
-	return sheet.get_all_records(head=2, value_render_option=ValueRenderOption.formula)
+	return sheet.get_all_records(head=2)
