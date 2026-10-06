@@ -129,7 +129,7 @@ async def refresh(
 		)
 		return
 
-	tentative = not week_has_started(year, quarter.value, week, safe_as_of_date)
+	tentative = not week_has_started(resolved_year, resolved_quarter, resolved_week, safe_as_of_date)
 
 	# Rebuild the embed from fresh sheet data.
 	try:
