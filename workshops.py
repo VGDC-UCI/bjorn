@@ -80,13 +80,10 @@ def get_week_start_date(year: int, quarter: str, week):
 	return start + datetime.timedelta(weeks=int(float(week)) - 1)
 
 
-def week_has_started(year, quarter, week) -> bool:
-	"""True only if today (PST) is on or after that week's Monday.
-	If the year/quarter isn't in the table, fail open (return True)."""
+def week_has_started(year, quarter, week, as_of_date):
+	# returns True if as_of_date >= real Monday for that week
 	monday = get_week_start_date(year, quarter, week)
-	if monday is None:
-		return True
-	return datetime.datetime.now(pst).date() >= monday
+	return monday is not None and as_of_date >= monday
 
 
 def get_current_quarter_and_week():
@@ -124,10 +121,7 @@ def get_workshops_for(year: int, quarter: str, week):
 	matches = []
 
 	target_week = _normalize_week(week)
-
-	acceptable = {target_week}
-	if isinstance(target_week, float) and target_week.is_integer():
-		acceptable.add(target_week + 0.5)
+	target_is_int = isinstance(target_week, float) and target_week.is_integer()
 
 	for w in ws:
 		# Skip empty or incomplete rows (blank Year or Wk)
@@ -142,9 +136,17 @@ def get_workshops_for(year: int, quarter: str, week):
 
 		row_week = _normalize_week(w['Wk'])
 
+		if target_is_int:
+			try:
+				week_match = int(row_week) == int(target_week)
+			except (ValueError, TypeError):
+				week_match = False
+		else:
+			week_match = row_week == target_week
+
 		if (row_year == int(year)
 				and str(w['Qtr']).strip().lower() == quarter.strip().lower()
-				and row_week in acceptable):
+				and week_match):
 			matches.append(w)
 
 	return matches
@@ -198,10 +200,10 @@ def get_dept_emoji(guild: discord.Guild, dept: str) -> str:
 	return fallback.get(dept, "📌")
 
 
-def build_workshop_embed(year, quarter, week, guild=None):
+def build_workshop_embed(year, quarter, week, guild=None, tentative=False):
 	matches = sort_workshops(get_workshops_for(year, quarter, week))
 	embed = discord.Embed(
-		title=f"📅 Workshops for {quarter} {year}, Week {week}",
+		title=f"📅 Workshops for {quarter} {year}, Week {week}{" (Tentative)" if tentative else ""}",
 		color=0xD2FF5E,
 	)
 
@@ -210,7 +212,7 @@ def build_workshop_embed(year, quarter, week, guild=None):
 	now = datetime.datetime.now(pst)
 	updated = now.strftime("%b %d, %Y at ") + now.strftime("%I:%M %p").lstrip("0")
 	footer_text = (
-		f"VGDC at UCI \u00A0•\u00A0 Last updated {updated}"
+		f"VGDC at UC Irvine \u00A0•\u00A0 Updated {updated}"
 		f"{_encode_refresh_tag(year, quarter, week)}"
 	)
 

@@ -34,6 +34,9 @@ DAY_ORDER = {
 	"friday": 5, "saturday": 6, "sunday": 7
 }
 
+PREVIEW_OFFSET_WEEKS = 2
+PREVIEW_SAFE_OFFSET_WEEKS = 1
+
 WORKSHOP_SHEET = "https://docs.google.com/spreadsheets/d/1-5-OH3o_zeh8TT9WV7zcA7T-wWZhGs8xIaLYsL0HpZQ/edit"
 
 # UCI quarter start dates (the Monday that begins Week 1).

@@ -1,11 +1,12 @@
 # commands/workshop_cmd.py
 # /workshops slash command
+import datetime
 
 import discord
 from discord import app_commands
 
 from bot import command_tree, client
-from config import VGDCServerId
+from config import VGDCServerId, pst, PREVIEW_OFFSET_WEEKS, PREVIEW_SAFE_OFFSET_WEEKS
 from workshops import build_workshop_embed, get_week_start_date, week_has_started
 
 
@@ -29,23 +30,27 @@ async def workshops(
 		quarter: app_commands.Choice[str],
 		week: app_commands.Range[int, 1, 10]
 ):
-	# Block weeks that haven't started yet (before that week's Monday in PST).
-	if not week_has_started(year, quarter.value, week):
-		monday = get_week_start_date(year, quarter.value, week)
+	await interaction.response.defer()
+
+	now = datetime.datetime.now(pst).date()
+	as_of_date = now + datetime.timedelta(weeks=PREVIEW_OFFSET_WEEKS)
+	safe_as_of_date = now + datetime.timedelta(weeks=PREVIEW_SAFE_OFFSET_WEEKS)
+
+	if not week_has_started(year, quarter.value, week, as_of_date):
+		monday = get_week_start_date(year, quarter.value, week - PREVIEW_OFFSET_WEEKS)
 		when = monday.strftime("%b %d, %Y") if monday else "its scheduled start date"
-		await interaction.response.send_message(
+		await interaction.followup.send(
 			f"⏳ The workshop schedule for **{quarter.value} {year}, Week {week}** isn't "
 			f"available yet. It will be available by **Monday, {when}**.",
 			ephemeral=True,
 		)
 		return
 
-	# Defer in case the Google Sheets call takes a moment
-	await interaction.response.defer()
+	tentative = not week_has_started(year, quarter.value, week, safe_as_of_date)
 
 	try:
 		guild = client.get_guild(VGDCServerId)
-		embed = build_workshop_embed(year, quarter.value, week, guild=guild)
+		embed = build_workshop_embed(year, quarter.value, week, guild=guild, tentative=tentative)
 	except Exception as e:
 		print(f"[workshops] sheet error: {e}")
 		await interaction.followup.send(

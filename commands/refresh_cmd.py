@@ -1,12 +1,13 @@
 # commands/refresh_cmd.py
 # /refresh slash command
 # re-fetches sheet data and edits an existing embed message
+import datetime
 
 import discord
 from discord import app_commands
 
 from bot import command_tree, client
-from config import VGDCServerId
+from config import VGDCServerId, pst, PREVIEW_OFFSET_WEEKS, PREVIEW_SAFE_OFFSET_WEEKS
 from workshops import (
 	build_workshop_embed,
 	parse_refresh_tag,
@@ -111,24 +112,30 @@ async def refresh(
 		)
 		return
 
+	now = datetime.datetime.now(pst).date()
+	as_of_date = now + datetime.timedelta(weeks=PREVIEW_OFFSET_WEEKS)
+	safe_as_of_date = now + datetime.timedelta(weeks=PREVIEW_SAFE_OFFSET_WEEKS)
+
 	# Block refreshing to a week that hasn't started yet. Leave the message
 	# untouched so a future week can't clobber a currently-valid embed.
-	if not week_has_started(resolved_year, resolved_quarter, resolved_week):
-		monday = get_week_start_date(resolved_year, resolved_quarter, resolved_week)
+	if not week_has_started(resolved_year, resolved_quarter, resolved_week, as_of_date):
+		monday = get_week_start_date(resolved_year, resolved_quarter, resolved_week - PREVIEW_OFFSET_WEEKS)
 		when = monday.strftime("%b %d, %Y") if monday else "its scheduled start date"
 		await interaction.followup.send(
 			f"⏳ Can't refresh to **{resolved_quarter} {resolved_year}, "
-			f"Week {resolved_week}** yet because that week starts **Monday, {when}**. "
+			f"Week {resolved_week}** yet because that week's viewable date starts **Monday, {when}**. "
 			f"The message was left unchanged.",
 			ephemeral=True,
 		)
 		return
 
+	tentative = not week_has_started(year, quarter.value, week, safe_as_of_date)
+
 	# Rebuild the embed from fresh sheet data.
 	try:
 		guild = client.get_guild(VGDCServerId)
 		embed = build_workshop_embed(
-			resolved_year, resolved_quarter, resolved_week, guild=guild
+			resolved_year, resolved_quarter, resolved_week, guild=guild, tentative=tentative
 		)
 	except Exception as e:
 		print(f"[refresh] sheet error: {e}")
