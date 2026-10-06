@@ -30,10 +30,12 @@ async def workshops(
 		quarter: app_commands.Choice[str],
 		week: app_commands.Range[int, 1, 10]
 ):
-	await interaction.response.defer()
-
 	now = datetime.datetime.now(pst).date()
 	as_of_date = now + datetime.timedelta(weeks=PREVIEW_OFFSET_WEEKS)
+
+	will_be_blocked = not week_has_started(year, quarter.value, week, as_of_date)
+	await interaction.response.defer(ephemeral=will_be_blocked)
+
 	safe_as_of_date = now + datetime.timedelta(weeks=PREVIEW_SAFE_OFFSET_WEEKS)
 
 	if not week_has_started(year, quarter.value, week, as_of_date):
