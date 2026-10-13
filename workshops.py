@@ -183,12 +183,13 @@ def get_dept_emoji(guild: discord.Guild, dept: str) -> str:
 		"Audio": "Plop",
 		"UI/UX": "Uli",
 		"Strike": "Bjorn",
+		"Marketing": "Lele",
 	}
 	# Fallback Unicode emojis if mascot is not found
 	fallback = {
 		"Design": "⚙️", "Programming": "💻", "Production": "📈",
 		"Writing": "✍️", "Art 3D": "🧊", "Art 2D": "🖌️",
-		"Audio": "🎵", "UI/UX": "📱", "Strike": "🐸",
+		"Audio": "🎵", "UI/UX": "📱", "Strike": "🐸", "Marketing": "📱",
 	}
 
 	name = custom_names.get(dept)
