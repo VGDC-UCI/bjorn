@@ -9,14 +9,12 @@ from config import scam_keywords_start, scam_keywords, ChannelBjornHammer, secre
 
 async def handle_message(message):
 	msg_lower = message.content.lower()
-	if ("everyone" in msg_lower or "here" in msg_lower) and any(
-			word in msg_lower for word in scam_keywords_start) and any(word in msg_lower for word in scam_keywords):
+	if any(word in msg_lower for word in scam_keywords_start) and any(word in msg_lower for word in scam_keywords):
 		await message.delete()
 
 		# Capture the first matched word from each list
 		matched_start = next((word for word in scam_keywords_start if word in msg_lower), None)
 		matched_keyword = next((word for word in scam_keywords if word in msg_lower), None)
-		matched_mention = "@everyone" if "everyone" in msg_lower else "@here"
 
 		table_channel = client.get_channel(ChannelBjornHammer)
 		if table_channel:
@@ -39,7 +37,6 @@ async def handle_message(message):
 			embed.add_field(
 				name="Reason",
 				value=(
-					f"Mention: `{matched_mention}`\n"
 					f"Start keyword: `{matched_start}`\n"
 					f"Scam keyword: `{matched_keyword}`"
 				),
