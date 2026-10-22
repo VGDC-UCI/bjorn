@@ -8,31 +8,40 @@ import re
 from datetime import datetime, timedelta, date
 
 from bot import client
-from config import SCAM_KEYWORDS, SCAM_THRESHOLD, ChannelBjornHammer, secret_lab_regex, WhitelistedRoleIds
+from config import ChannelBjornHammer, secret_lab_regex
+from moderation_config import SCAM_KEYWORDS, SCAM_THRESHOLD, NEWUSERPENALTY, TrustedRoleIds, TrustedChannelIds
 
 
 async def handle_message(message):
+
+	# Skip messages in trusted channels
+	if message.channel.id in TrustedChannelIds:
+		return
+	
+	# Skip messages sent by trusted users
+	for role in message.author.roles:
+		if role.id in TrustedRoleIds:
+			return
+
+	# Process message
 	msg_lower = message.content.lower()
 	stemmed_tokens = tokenize_and_stem(msg_lower)
 
-	# skip messages sent by trusted users
-	for role in message.author.roles:
-		if role.id in WhitelistedRoleIds:
-			return
-
-
+	# Initialize point system
 	points:int = 0
 
-	# if the user is new, add negative penalty
+	# If the user is new, add negative penalty
 	dayssincejoin = message.author.joined_at.date() - date.today()
-	if dayssincejoin.days < 3:
-		points += 8
-	
+	if dayssincejoin.days < 2:
+		points += NEWUSERPENALTY
+
+	# Intialize index
 	word_table = {}
 
+	# Retrieve scam keywords
 	flags = set(SCAM_KEYWORDS)
 
-	# build token index of flagged scam words
+	# Build token index of flagged scam words
 	pos = 0
 	for token in stemmed_tokens:
 		if token in flags:
@@ -44,9 +53,11 @@ async def handle_message(message):
 	# perform some math
 	# todo
 
+	for key in word_table.keys():
+		points += len(word_table[key][1])
 
 
-	# handle message based on points vs threshold
+	# Handle message based on points vs threshold
 	if points > SCAM_THRESHOLD:
 		await message.delete()
 		automated_scam_response(message.created_at, message.author.id, message.channel.id, points, message.content[:1024] if message.content else None)
@@ -55,16 +66,18 @@ async def handle_message(message):
 		automated_scam_warn(message.created_at, message.author.id, message.channel.id, points/SCAM_THRESHOLD, message.content[:1024] if message.content else None)
 		return
 
+	# Quiet Lab
 	if secret_lab_regex.search(message.content) is not None:
-		await message.reply("I think you mean \"Quiet Lab.\"")
-		return
+			await message.reply("I think you mean \"Quiet Lab.\"")
+			return
 
 
 async def tokenize_and_stem(msg:str) -> list[str]:
 	stripped = re.sub(r'[^\w\s]', '', msg)
 	tokens = stripped.split()
-	ps = PorterStemmer()
-	return [ps.stem(token) for token in tokens]
+	# ps = PorterStemmer()
+	# return [ps.stem(token) for token in tokens]
+	return tokens
 
 async def automated_scam_response(time:datetime, author, location,score:int, quote):
 	table_channel = client.get_channel(ChannelBjornHammer)
