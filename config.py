@@ -22,10 +22,14 @@ ModerationChannelWhitelist = [
 ChannelLabOpenVC = 1553868534663086240
 
 # Scam detection keywords
-scam_keywords_start = ["just upgraded", "an upgrade", "give out", "giving out", "give away",
+SCAM_KEYWORDS = ["just upgraded", "an upgrade", "give out", "giving out", "give away",
 					   "giving away", "is free", "for free", "join our", "for sale",
-					   "dm me", "you are interested", "you're interested"]
-scam_keywords = ["tutors", "macbook", "iphone", "tickets", "camera", "car", "ps5", "PC", "windows"]
+					   "dm me", "you are interested", "you're interested", "tutors", "macbook"
+                       "iphone", "tickets", "camera", "car", "ps5", "PC", "windows"]
+
+SCAM_PAIRS = []
+
+# Secret Lab (Legacy)
 secret_lab_regex = re.compile(
 	r"(?:[s$]\s*(?:[e3 ]\s*)+[ck]\s*[r4]\s*(?:[e3 i1]\s*)+[t7]\s*([e3 ]\s*)*\s*[l1]\s*[a@8 ]\s*[b8])", re.IGNORECASE)
 
