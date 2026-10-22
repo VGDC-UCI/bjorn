@@ -3,13 +3,13 @@
 
 import discord
 
-from nltk.stem import PorterStemmer
+#from nltk.stem import PorterStemmer
 import re
 from datetime import datetime, timedelta, date
 
 from bot import client
 from config import ChannelBjornHammer, secret_lab_regex
-from moderation_config import SCAM_KEYWORDS, SCAM_THRESHOLD, NEWUSERPENALTY, TrustedRoleIds, TrustedChannelIds
+from moderation_config import SCAM_KEYWORDS, SCAM_THRESHOLD, NEWUSERPENALTY, PINGPENALTY, TrustedRoleIds, TrustedChannelIds
 
 
 async def handle_message(message):
@@ -47,7 +47,7 @@ async def handle_message(message):
 		if token in flags:
 			word_table[token] = word_table[token] + [pos]
 		elif token in ("everyone", "here"): #penalty for mentions
-			points += 15
+			points += PINGPENALTY
 		pos += 1
 
 	# perform some math
