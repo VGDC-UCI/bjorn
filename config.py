@@ -21,6 +21,9 @@ ModerationChannelWhitelist = [
 ]
 ChannelLabOpenVC = 1553868534663086240
 
+# Role IDs
+WhitelistedRoleIds = ()
+
 # Scam detection keywords
 SCAM_KEYWORDS = ["just upgraded", "an upgrade", "give out", "giving out", "give away",
 					   "giving away", "is free", "for free", "join our", "for sale",
@@ -28,6 +31,7 @@ SCAM_KEYWORDS = ["just upgraded", "an upgrade", "give out", "giving out", "give 
                        "iphone", "tickets", "camera", "car", "ps5", "PC", "windows"]
 
 SCAM_PAIRS = []
+SCAM_THRESHOLD = 25
 
 # Secret Lab (Legacy)
 secret_lab_regex = re.compile(

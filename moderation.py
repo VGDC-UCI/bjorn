@@ -5,29 +5,45 @@ import discord
 
 from nltk.stem import PorterStemmer
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, date
 
 from bot import client
-from config import SCAM_KEYWORDS, SCAM_THRESHOLD, ChannelBjornHammer, secret_lab_regex
+from config import SCAM_KEYWORDS, SCAM_THRESHOLD, ChannelBjornHammer, secret_lab_regex, WhitelistedRoleIds
 
 
 async def handle_message(message):
 	msg_lower = message.content.lower()
 	stemmed_tokens = tokenize_and_stem(msg_lower)
 
+	# skip messages sent by trusted users
+	for role in message.author.roles:
+		if role.id in WhitelistedRoleIds:
+			return
+
+
 	points:int = 0
+
+	# if the user is new, add negative penalty
+	dayssincejoin = message.author.joined_at.date() - date.today()
+	if dayssincejoin.days < 3:
+		points += 8
+	
 	word_table = {}
 
 	flags = set(SCAM_KEYWORDS)
 
+	# build token index of flagged scam words
 	pos = 0
 	for token in stemmed_tokens:
 		if token in flags:
 			word_table[token] = word_table[token] + [pos]
+		elif token in ("everyone", "here"): #penalty for mentions
+			points += 15
 		pos += 1
 
 	# perform some math
 	# todo
+
 
 
 	# handle message based on points vs threshold
