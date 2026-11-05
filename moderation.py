@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, date
 
 from bot import client
 from config import ChannelBjornHammer, secret_lab_regex
-from moderation_config import SCAM_KEYWORDS, SCAM_THRESHOLD, NEWUSERPENALTY, PINGPENALTY, TrustedRoleIds, TrustedChannelIds
+from moderation_config import SCAM_KEYWORDS, SCAM_THRESHOLD, NEWUSERPENALTY, VERIFICATIONPENALTY, PINGPENALTY, TrustedRoleIds, TrustedChannelIds, VerifiedRoleId
 
 
 async def handle_message(message):
@@ -28,12 +28,16 @@ async def handle_message(message):
 	stemmed_tokens = tokenize_and_stem(msg_lower)
 
 	# Initialize point system
+	penalties:int = 0
 	points:int = 0
 
-	# If the user is new, add negative penalty
+	# If the user is new, add penalty
 	dayssincejoin = message.author.joined_at.date() - date.today()
 	if dayssincejoin.days < 2:
-		points += NEWUSERPENALTY
+		penalties += NEWUSERPENALTY
+
+	# If the user is unverified, add penalty
+	
 
 	# Intialize index
 	word_table = {}
@@ -47,7 +51,7 @@ async def handle_message(message):
 		if token in flags:
 			word_table[token] = word_table[token] + [pos]
 		elif token in ("everyone", "here"): #penalty for mentions
-			points += PINGPENALTY
+			penalties += PINGPENALTY
 		pos += 1
 
 	# perform some math
@@ -56,6 +60,9 @@ async def handle_message(message):
 	for key in word_table.keys():
 		points += len(word_table[key][1])
 
+	# Add Penalties
+	if points > 2:
+		points += penalties
 
 	# Handle message based on points vs threshold
 	if points > SCAM_THRESHOLD:
