@@ -9,7 +9,7 @@ import zoneinfo
 pst = zoneinfo.ZoneInfo("America/Los_Angeles")
 
 # Server & channel IDs
-VGDCServerId = 228326116270538753
+VGDCServerId = 601264178295996437
 ChannelLabStatus = 629369478462963722
 ChannelBjornHammer = 1420871723363991673
 ChannelWorkshops = 363457813608923137

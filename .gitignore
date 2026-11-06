@@ -29,3 +29,9 @@ Thumbs.db
 # Deployment / build files
 dist/
 build/
+test/
+
+# Assets for horse
+horse_images/
+output.png
+

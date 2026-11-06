@@ -26,7 +26,8 @@ import commands  # noqa: F401
 
 @client.event
 async def on_ready():
-	await command_tree.sync()
+	synced = await command_tree.sync()
+	print(f"Synced {len(synced)} commands: {[c.name for c in synced]}")
 
 	await set_lab_open(False)
 	if not tasks.auto_close_lab.is_running():

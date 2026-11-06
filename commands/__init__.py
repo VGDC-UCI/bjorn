@@ -5,3 +5,4 @@
 from . import lab
 from . import refresh_cmd
 from . import workshop_cmd
+from . import horse_cmd
