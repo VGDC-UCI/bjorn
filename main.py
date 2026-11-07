@@ -10,6 +10,7 @@
 
 import os
 
+import discord
 from dotenv import load_dotenv
 
 from config import VGDCServerId, ModerationChannelWhitelist
@@ -26,7 +27,10 @@ import commands  # noqa: F401
 
 @client.event
 async def on_ready():
-	await command_tree.sync()
+	synced = await command_tree.sync()
+	print(f"Synced {len(synced)} commands: {[c.name for c in synced]}")
+	guild_synced = await command_tree.sync(guild=discord.Object(id=VGDCServerId))
+	print(f"Synced {len(guild_synced)} guild commands: {[c.name for c in guild_synced]}")
 
 	await set_lab_open(False)
 	if not tasks.auto_close_lab.is_running():
