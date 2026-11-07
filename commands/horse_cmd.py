@@ -6,6 +6,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw,ImageFont
 import numpy as np
 import os
+import sqlite3
 
 from bot import command_tree, client
 from config import VGDCServerId
@@ -25,6 +26,48 @@ async def horse(interaction: discord.Interaction):
 
     await interaction.response.defer()
     user = interaction.user.name
+    user_id = interaction.user.id
+
+    # Points check
+    connection = sqlite3.connect("points.db")
+    cursor = connection.cursor()
+
+    cursor.execute(f"SELECT num_points FROM points WHERE user_id={user_id}")
+    item = cursor.fetchall()
+    if len(item)!=1:
+        embed = discord.Embed(
+            title="Not Enough Points!",
+            description=f"Uh oh, you don't have enough points to roll for a horse. You need 10 points.",
+            color=0xFFB444
+        )
+        await interaction.followup.send(
+            embed=embed
+        )
+        return
+
+    points = item[0][0]
+    if points >= 10:
+        points -= 10
+        cursor.execute(f"UPDATE points SET num_points={points} WHERE user_id={user_id}")
+        connection.commit()
+        connection.close()
+    else:
+        connection.commit()
+        connection.close()
+        embed = discord.Embed(
+            title="Not Enough Points!",
+            description=f"Uh oh, you don't have enough points to roll for a horse.",
+            color=0xFFB444
+        )
+        embed.add_field(
+            name="Your Points",
+            value=points
+        )
+        await interaction.followup.send(
+            embed=embed
+        )
+        return
+
     
     # Determine rarity
     roll = random() * 100
@@ -71,7 +114,6 @@ async def horse(interaction: discord.Interaction):
 
     isShiny = random() * 100 < 1
 
-
     # Randomly generated horse image
     horseBase = randrange(1, len(HORSES)+1)
     horseImgPath = Path(HORSEPATH + HORSES[horseBase-1])
@@ -104,7 +146,7 @@ async def horse(interaction: discord.Interaction):
             new_img.append((cell[0],cell[1],cell[2],cell[3]))
 
     horseImg.putdata(new_img)
-    number = int(f"{r_num}{horseBase}{g2a}{b2a}{"0" if isShiny else "8"}{r2a}")
+    number = int(f"{r_num}{horseBase}{g2a:03d}{b2a:03d}{"0" if isShiny else "8"}{r2a:03d}")
     frameImg = Image.open(frame)
     frameImg.alpha_composite(horseImg, (int((512 - horseImg.width)/2), int((512 - horseImg.height)/2) + 20))
 
@@ -120,6 +162,7 @@ async def horse(interaction: discord.Interaction):
     # Determine Horse Stats
     speed = r_num + randrange(0,6)
     affection = r_num + randrange(-1, 4)
+    strength = int(r_num/3)
 
     if speed < 1:
         speed = 1
@@ -127,6 +170,24 @@ async def horse(interaction: discord.Interaction):
         affection = 1
 
     horseName = choice(["W","B","Tr","D","Qu"]) + "i" + ("l" * randrange(1,7))
+
+    # Explosion chance
+    isExploded = random() * 100 < (2+affection)
+
+    if isExploded:
+        embed = discord.Embed(
+            title="Your Will Horse Exploded",
+            description=f"Oh no, something went wrong :(\nYour {rarity} horse, {horseName}, exploded before it could be sent to you.",
+            color=0xFFB444
+        )
+        embed.add_field(
+            name="Remaining Points",
+            value=points
+        )
+        await interaction.followup.send(
+            embed=embed
+        )
+        return
     
     # Send Message
 
@@ -153,14 +214,24 @@ async def horse(interaction: discord.Interaction):
         inline=True
     )
     embed.add_field(
+        name="Remaining Points",
+        value=points,
+        inline=True
+    )
+    embed.add_field(
         name="Speed",
-        value=f"[{"⏹" * speed}{"☐" * (15-speed)}]",
+        value=f"[{"■" * speed}{"☐" * (15-speed)}]",
         inline=False
     )
     embed.add_field(
         name="Affection",
-        value=f"[{"⏹" * affection}{"☐" * (15-affection)}]",
-        inline=True
+        value=f"[{"♣" * strength}{"♧" * (15-strength)}]",
+        inline=False
+    )
+    embed.add_field(
+        name="Strength",
+        value=f"[{"♜" * affection}{"♖" * (3-affection)}]",
+        inline=False
     )
     embed.set_image(url="attachment://image.png")
 
@@ -168,3 +239,6 @@ async def horse(interaction: discord.Interaction):
         file=file,
         embed=embed
     )
+
+    #print(f"Horse: {number} | Affection: {affection} | isExploded: {isExploded}")
+
