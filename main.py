@@ -4,6 +4,7 @@
 #
 # Created by Diane Sparks (fractaldiane)
 # Maintained by Justin Li (birbwatch)
+# Horse Generator by Kevin Chen
 # Bjorn (the character) by Franny (fruttipie)
 #
 # Entry point: wires everything together and runs the bot.

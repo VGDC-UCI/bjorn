@@ -13,50 +13,60 @@ from config import VGDCServerId
 FRAMEPATH = "horse_images/"
 HORSEPATH = "horse_images/"
 HORSES = ["horse_base_A.png", "horse_base_B.png"]
+EMBEDCOLORS = [0xfca19c, 0x9ba09c, 0x9e976e, 0x88e894, 0x68d6d2, 0xfcf683,0xd69cfc, 0x32fcc3,0xfc8fd1,0x37fcc1]
 
 
 @command_tree.command(
 	name="horse",
-	description="Set Game Lab status to open",
+	description="Generate a horse :D",
 	guild=discord.Object(id=VGDCServerId)
 )
 async def horse(interaction: discord.Interaction):
 
+    await interaction.response.defer()
     user = interaction.user.name
     
     # Determine rarity
     roll = random() * 100
-    if roll < 0.05:
-        rarity = "SSR+"
-        r_num = 7
+    if roll < 0.003:
+        rarity = "SSR++ ☆☆☆☆☆☆"
+        r_num = 9
+        frame = Path(FRAMEPATH +"horse_ssrplusplus.png")
+    elif roll < 0.05:
+        rarity = "SSR+ ☆☆☆☆"
+        r_num = 8
         frame = Path(FRAMEPATH +"horse_ssrplus.png")
     elif roll < 0.3:
-        rarity = "SSR"
-        r_num = 6
+        rarity = "SSR ☆☆☆"
+        r_num = 7
         frame = Path(FRAMEPATH +"horse_ssr.png")
     elif roll < 1.2:
-        rarity = "SR"
-        r_num = 5
+        rarity = "SR ☆☆"
+        r_num = 6
         frame = Path(FRAMEPATH +"horse_sr.png")
     elif roll < 4:
-        rarity = "UR"
-        r_num = 4
+        rarity = "UR ☆"
+        r_num = 5
         frame = Path(FRAMEPATH +"horse_ur.png")
     elif roll < 10:
-        rarity = "Rare"
-        r_num = 3
+        rarity = "Rare ☆"
+        r_num = 4
         frame = Path(FRAMEPATH +"horse_rare.png")
     elif roll < 25:
         rarity = "Uncommon"
-        r_num = 2
+        r_num = 3
         frame = Path(FRAMEPATH +"horse_uncommon.png")
     elif roll < 45:
         rarity = "Common++"
-        r_num = 1
+        r_num = 2
         frame = Path(FRAMEPATH +"horse_commonplus.png")
+    elif roll > 99.95:
+        rarity = "Super Negative Luck"
+        r_num = 0
+        frame = Path(FRAMEPATH +"horse_nl.png")
     else:
         rarity = "Common"
-        r_num = 0
+        r_num = 1
         frame = Path(FRAMEPATH +"horse_common.png")
 
     isShiny = random() * 100 < 1
@@ -72,14 +82,14 @@ async def horse(interaction: discord.Interaction):
     data = horseImg.get_flattened_data()
 
     if horseBase==1:
-        r1a, g1a, b1a, r1b, g1b, b1b = 175,58,58,95,21,21
+        r1a, g1a, b1a, r1b, g1b, b1b, r1c, g1c, b1c = 175,58,58,95,21,21, 193, 176, 43
+        r2c, g2c, b2c,a2c = randrange(20,240), randrange(20,240), randrange(20,240), 255
     elif horseBase==2:
         r1a, g1a, b1a, r1b, g1b, b1b = 229,106,106,130,62,75
     
     r2a,g2a,b2a,a2a = randrange(20,240), randrange(20,240), randrange(20,240), 255
-    r2b,g2b,b2b,a2b = int(r2a * 0.2), int(g2a * 0.2), int(b2a * 0.2), 255
-    # r2a,g2a,b2a,a2a = 45,45,45, 255
-    # r2b,g2b,b2b,a2b = 20,20,20,255
+    r2b,g2b,b2b,a2b = int(r2a * 0.5), int(g2a * 0.5), int(b2a * 0.5), 255
+    
     primaryColorMask = (r1a,g1a,b1a,255)
     secondaryColorMask = (r1b,g1b,b1b,255)
     new_img = []
@@ -88,6 +98,8 @@ async def horse(interaction: discord.Interaction):
             new_img.append((r2a,g2a,b2a,a2a))
         elif cell[0]==r1b and cell[1]==g1b and cell[2]==b1b:
             new_img.append((r2b,g2b,b2b,a2b))
+        elif horseBase==1 and cell[0]==r1c and cell[1]==g1c and cell[2]==b1c:
+            new_img.append((r2c,g2c,b2c,a2c))
         else:
             new_img.append((cell[0],cell[1],cell[2],cell[3]))
 
@@ -106,46 +118,53 @@ async def horse(interaction: discord.Interaction):
     frameImg.save(Path("output.png"))
 
     # Determine Horse Stats
-    speed = "□" * (r_num + randrange(0,6))
-    affection = "□" * (r_num + randrange(-1, 4))
+    speed = r_num + randrange(0,6)
+    affection = r_num + randrange(-1, 4)
 
-    if speed == "":
-        speed = "□"
-    if affection == "":
-        affection = "□"
+    if speed < 1:
+        speed = 1
+    if affection < 1:
+        affection = 1
+
+    horseName = choice(["W","B","Tr","D","Qu"]) + "i" + ("l" * randrange(1,7))
     
     # Send Message
-    channel = interaction.channel
 
     file = discord.File("output.png", filename="image.png")
 
     embed = discord.Embed(
-        title="🎲 Will Horse Gacha",
-        description=f"Here's your random horse roll, {user}!",
-        color=0xE74C3C
+        title="🎲 Will Horse Gacha ✮⋆˙",
+        description=f"Here's your random horse roll!",
+        color=EMBEDCOLORS[r_num]
     )
     embed.add_field(
         name="Rarity",
         value=rarity,
-        inline=False
+        inline=True
+    )
+    embed.add_field(
+        name="Name",
+        value = horseName,
+        inline=True
+    )
+    embed.add_field(
+        name="Number",
+        value = number,
+        inline=True
     )
     embed.add_field(
         name="Speed",
-        value=speed,
+        value=f"[{"⏹" * speed}{"☐" * (15-speed)}]",
         inline=False
     )
     embed.add_field(
         name="Affection",
-        value=affection,
-        inline=False
+        value=f"[{"⏹" * affection}{"☐" * (15-affection)}]",
+        inline=True
     )
     embed.set_image(url="attachment://image.png")
 
-    await channel.send(
-        file = file,
-        embed = embed
-    )
     await interaction.followup.send(
-        f"✅ Horse created!",
-        ephemeral=True
+        file=file,
+        embed=embed
     )
