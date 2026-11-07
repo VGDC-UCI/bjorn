@@ -34,4 +34,5 @@ test/
 # Assets for horse
 horse_images/
 output.png
+*.db
 
